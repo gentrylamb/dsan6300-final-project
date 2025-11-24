@@ -1,0 +1,9 @@
+---
+title: "Story"
+author: Gentry Lamb
+format:
+  html:
+    embed-resources: true
+---
+
+About this site

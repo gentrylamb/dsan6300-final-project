@@ -1,0 +1,23 @@
+project:
+  type: website
+  resources: "data/*"
+
+website:
+  title: "site"
+  navbar:
+    left:
+      - href: index.qmd
+        text: Home
+      - href: story.qmd
+        text: Story
+      - href: code.ipynb
+        text: Code
+
+format:
+  html:
+    theme: mint
+    # css: styles.css
+    toc: true
+
+
+
