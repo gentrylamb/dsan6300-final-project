@@ -6,4 +6,28 @@ format:
     embed-resources: true
 ---
 
-About this site
+## Key Insights / Takeaways
+
+1. **Airline Operational Performance**
+
+   * Some airlines experience extreme delays; early departures are rarer but still present.
+   * Differences may indicate hub efficiency or scheduling issues.
+
+2. **Busiest Days**
+
+   * Mondays and Fridays are busiest; staffing and scheduling must account for these peaks.
+
+3. **Airport Bottlenecks**
+
+   * Certain airports consistently show high average delays.
+   * Airlines may need to adjust hub operations.
+
+4. **Cancellations**
+
+   * Low overall rates, but weather and carrier issues dominate.
+   * Some airports are disproportionately affected.
+
+5. **Trends Over Time**
+
+   * Flight volume shows clear patterns; the moving average helps identify sustained trends.
+   * Helps in predictive scheduling and capacity planning.
