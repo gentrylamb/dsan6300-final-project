@@ -1,21 +1,22 @@
 project:
   type: website
+  output-dir: docs/
   resources: "data/*"
 
 website:
-  title: "site"
+  title: "Airline Performance Analysis"
   navbar:
     left:
       - href: index.qmd
         text: Home
       - href: story.qmd
-        text: Story
+        text: The Story
       - href: code.ipynb
         text: Code
 
 format:
   html:
-    theme: mint
+    theme: minty
     # css: styles.css
     toc: true
 

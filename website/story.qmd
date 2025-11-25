@@ -6,6 +6,9 @@ format:
     embed-resources: true
 ---
 
+{{< embed code.ipynb#airline-departure-delay >}}
+
+
 ## Key Insights / Takeaways
 
 1. **Airline Operational Performance**
