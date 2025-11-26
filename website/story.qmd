@@ -1,36 +1,56 @@
 ---
-title: "Story"
+title: "Airline Performance: A Data-Driven Narrative"
 author: Gentry Lamb
 format:
   html:
     embed-resources: true
 ---
 
+Understanding airline performance requires looking beyond isolated statistics and examining how delays, cancellations, and flight volumes interact across both space and time. The analyses in this project use seven different datasets—each derived from SQL queries—to uncover patterns in how airlines operate, how airports influence on-time performance, and how traveler behavior shapes the rhythm of U.S. air travel.
+
+The story begins with a basic, but revealing, question: **which airlines struggle most with departure delays?**
+The first visualization provides a clear answer by comparing the maximum departure delay recorded for each major airline.
 {{< embed code.ipynb#airline-departure-delay >}}
 
+Immediately, certain carriers stand out with extreme single-day delays, sometimes stretching several hours. These outliers are not typical—they represent points where operational strain, weather systems, or congested hubs likely overwhelmed the airline’s schedule. They also show that the airline industry is extremely sensitive to disruptions: a single bottleneck can cascade rapidly.
 
-## Key Insights / Takeaways
+But delays alone don’t tell the whole story. Some airlines regularly depart **early**—sometimes too early.
+{{< embed code.ipynb#airline-early-departure >}}
 
-1. **Airline Operational Performance**
+The contrast between the maximum early departures and maximum late departures reveals something important: airlines differ not only in how late they run, but also in how aggressively they pad schedules. For travelers, an early departure can be just as frustrating as a late one—and the visualization suggests that the worst offenders in one category are not always the worst in the other.
 
-   * Some airlines experience extreme delays; early departures are rarer but still present.
-   * Differences may indicate hub efficiency or scheduling issues.
+From here, the narrative turns to a behavioral pattern: **when do Americans fly the most?**
+The visualization of total flights by day of the week answers this clearly.
+{{< embed code.ipynb#day-rank >}}
 
-2. **Busiest Days**
+Flight volume peaks on predictable business-heavy days, particularly Mondays and Fridays. The ranking annotations reinforce how reliably these patterns emerge. These cycles have operational consequences: airports must adjust staffing levels, airlines must anticipate gate congestion, and air traffic control must prepare for increases in runway demand.
 
-   * Mondays and Fridays are busiest; staffing and scheduling must account for these peaks.
+Airports themselves play an outsized role in shaping delay performance. Some facilities consistently struggle with congestion, weather, or runway limitations. The next figure highlights the **airport with the highest average departure delay for each airline**.
+{{< embed code.ipynb#airport-departure-delay >}}
 
-3. **Airport Bottlenecks**
+This visualization makes clear that certain airports—often large hubs or geographically weather-exposed—create systemic pressure for several airlines simultaneously. When the worst-performing airports are mapped across carriers, patterns of bottleneck locations begin to emerge.
 
-   * Certain airports consistently show high average delays.
-   * Airlines may need to adjust hub operations.
+Complementing delays is the issue of cancellations. Some airports cancel flights overwhelmingly due to weather, while others suffer from NAS-related issues (air traffic control limitations, congestion, or general system delays). The dataset identifying the **most frequent cancellation reason per airport** reveals these distinctions vividly.
+{{< embed code.ipynb#top-airport-cancellation-reason >}}
 
-4. **Cancellations**
+To better understand how widespread each cancellation driver is, another visualization counts how many airports list each reason as their top cause.
+{{< embed code.ipynb#cancellation-reasons-totals >}}
 
-   * Low overall rates, but weather and carrier issues dominate.
-   * Some airports are disproportionately affected.
+Together, these visualizations show that while weather is a major disruptor, NAS-related cancellations are surprisingly common and concentrated at some of the nation’s busiest airports.
 
-5. **Trends Over Time**
+Delays and cancellations give us snapshots, but the aviation system is also dynamic. To see that motion, the analysis turns to **daily flight volumes** and a 3-day moving average.
+{{< embed code.ipynb#temporal-trends >}}
 
-   * Flight volume shows clear patterns; the moving average helps identify sustained trends.
-   * Helps in predictive scheduling and capacity planning.
+This figure tells a story of natural peaks and troughs. High-traffic days often correspond to travel periods such as spring holidays, while dips follow immediately afterward. The annotations marking the maximum and minimum days help anchor the trends, showing not only when travel surges but also how quickly it settles.
+
+With these pieces—delay extremes, early departures, airport performance, and temporal trends—the final analysis combines multiple datasets to illustrate **airline delay profiles**. The scatterplot comparing maximum delays, maximum early departures, and worst airport delay provides a multidimensional view of how carriers behave.
+{{< embed code.ipynb#airline-delay-profile >}}
+
+Some airlines cluster tightly, suggesting consistent (if imperfect) scheduling performance. Others sprawl across the chart, indicating higher operational volatility. The size of each point—a reflection of average delay at the airline’s worst airport—adds depth by highlighting carriers most affected by specific bottleneck airports.
+
+The narrative concludes with the airport-level dashboard that merges delay and cancellation metrics.
+{{< embed code.ipynb#airport-performance-dashboard >}}
+
+Here, airports with both substantial delays and frequent cancellations emerge as clear operational pain points. Weather-dominated airports cluster differently from NAS-dominated ones, underscoring the varied challenges across the national system.
+
+Together, these visualizations paint a picture of an aviation network that is predictable in its rhythms but uneven in its performance. Airlines show unique delay behaviors, airports exert strong upstream influence on on-time performance, cancellation patterns reveal systemic and environmental pressures, and daily flight volumes bring the entire system into a temporal context. By integrating these datasets, the story uncovers not just what happens in U.S. air travel—but why it happens, and where the system strains the most.
