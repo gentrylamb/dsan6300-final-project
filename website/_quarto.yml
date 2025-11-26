@@ -7,6 +7,8 @@ website:
   title: "Airline Performance Analysis"
   favicon: media/favicon.png
   navbar:
+    title: false
+    logo: media/favicon.png
     left:
       - href: index.qmd
         text: Home
