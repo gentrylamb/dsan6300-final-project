@@ -1,0 +1,207 @@
+---
+title: "SQL Queries Used in This Project"
+author: Gentry Lamb
+format:
+  html:
+    embed-resources: true
+---
+
+This page collects all SQL queries used throughout the analysis.
+They are included for transparency, and to provide a complete reference for the data-processing logic used in the project.
+
+## 1. Maximum Departure Delay per Airline
+
+```sql
+-- 1) Find maximal departure delay in minutes for each airline. Sort results from smallest to largest maximum delay. Output airline names and values of the delay.
+select
+	a.Name as Airline,
+    max(p.DepDelay) as Max_Departure_Delay
+from
+	al_perf p,
+    L_AIRLINE_ID a
+where
+	p.DOT_ID_Reporting_Airline = a.ID
+group by
+	a.Name
+order by
+	Max_Departure_Delay asc;
+-- 15 rows
+```
+
+## 2. Maximum Early Departures per Airline
+
+```sql
+-- 2) Find maximal early departures in minutes for each airline. Sort results from largest to smallest. Output airline names.
+select
+	a.Name as Airline,
+    abs(min(p.DepDelay)) as Max_Early_Departure
+from
+	al_perf p,
+    L_AIRLINE_ID a
+where
+	p.DOT_ID_Reporting_Airline = a.ID
+group by
+	a.Name
+order by
+	Max_Early_Departure desc;
+-- 15 rows
+```
+
+## 3. Rank Days of Week by Total Flights
+
+```sql
+-- 3) Rank days of the week by the number of flights performed by all airlines on that day (1 is the busiest). Output the day of the week names, number of flights and ranks in the rank increasing order.
+select
+	w.Day,
+    sum(p.flights) as Num_Flights,
+    rank() over (order by sum(p.flights) desc) as Day_Rank
+from
+	al_perf p,
+    L_WEEKDAYS w
+where
+	p.DayOfWeek = w.Code
+group by
+	w.Day
+order by
+	Day_Rank asc;
+-- 7 rows
+```
+
+## 4. Airport With the Highest Average Departure Delay
+
+```sql
+-- 4) Find the airport that has the highest average departure delay among all airports. Consider 0 minutes delay for flights that departed early. Output one line of results: the airport name, code, and average delay.
+select
+	a.Name as Airport_Name,
+    a.Code as Airport_Code,
+    avg(p.DepDelayMinutes) as Avg_Departure_Delay
+from
+	al_perf p,
+    L_AIRPORT a
+where
+	p.Origin = a.Code
+group by
+	p.Origin, a.Name
+order by
+	Avg_Departure_Delay desc
+limit 1;
+-- 1 row
+```
+
+## 5. Worst Airport per Airline
+
+```sql
+-- 5) For each airline find an airport where it has the highest average departure delay. Output an airline name, a name of the airport that has the highest average delay, and the value of that average delay.
+with avg_delays as (
+	select
+		al.Name as Airline_Name,
+		ap.Name as Airport_Name,
+		avg(p.DepDelayMinutes) as Avg_Delay,
+        rank() over (
+			partition by p.DOT_ID_Reporting_Airline
+            order by avg(p.DepDelay) desc
+		) as delay_rank
+	from
+		al_perf p,
+		L_AIRLINE_ID al,
+		L_AIRPORT ap
+	where
+		p.Origin = ap.Code and
+		p.DOT_ID_Reporting_Airline = al.ID
+	group by
+		al.Name, ap.Name, p.DOT_ID_Reporting_Airline, p.Origin
+)
+select
+	Airline_Name,
+    Airport_Name,
+    Avg_Delay as Highest_Avg_Delay
+from
+	avg_delays
+where
+	delay_rank = 1
+order by
+	Airline_Name;
+-- 15 rows
+```
+
+## 6a. Count of Canceled Flights
+
+```sql
+-- 6a) Check if your dataset has any canceled flights.
+select
+	count(*) as Num_Cancelled_Flights
+from
+	al_perf
+where
+Cancelled = 1;
+-- 1 row
+```
+
+## 6b. Most Frequent Cancelation Reason per Airport
+
+```sql
+-- 6b) If it does, what was the most frequent reason for each departure airport? Output airport name, the most frequent reason, and the number of cancelations for that reason.
+with reason_counts as (
+	select
+		ap.Name as Airport_Name,
+        p.Origin as Airport_Code,
+        c.reason as Cancel_Reason,
+		count(*) as Num_Cancelled,
+        rank() over (
+			partition by p.Origin
+            order by count(*) desc
+		) as cancel_rank
+	from
+		al_perf p,
+		L_AIRPORT ap,
+        L_CANCELATION c
+	where
+		p.Origin = ap.Code and
+		p.CancellationCode = c.Code and
+        p.Cancelled = 1
+	group by
+		ap.Name, p.Origin, c.Reason
+)
+select
+    Airport_Name,
+    Cancel_Reason as Most_Frequent_Reason,
+    Num_Cancelled
+from
+	reason_counts
+where
+	cancel_rank = 1
+order by
+	Airport_Name;
+-- 285 rows
+```
+
+## 7. 3-Day Moving Average of Flights
+
+```sql
+-- 7) Build a report that for each day output average number of flights over the preceding 3 days.
+with daily_counts as (
+	select
+		-- FlightDate,
+        cast(FlightDate as date) as FlightDate,
+        count(*) as Flights_Per_Day
+	from
+		al_perf
+	group by
+		FlightDate
+)
+select
+	FlightDate,
+    Flights_Per_Day,
+    avg(Flights_Per_Day)
+		over (
+			order by FlightDate
+			rows between 3 preceding and 1 preceding
+		) as Avg_Previous_3_Days
+from
+	daily_counts
+where
+	FlightDate is not null
+order by
+	FlightDate;
+-- 31 rows
+```

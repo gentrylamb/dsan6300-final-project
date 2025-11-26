@@ -46,10 +46,13 @@ All visualizations are produced in Python using `matplotlib`, `seaborn`, and not
 │   ├── index.html
 │   ├── code.html
 │   ├── story.html
-│   └── site_libs/                  # Quarto assets (bootstrap, JS, CSS)
+│   ├── sql.html
+│   └── site_libs/                      # Quarto assets (bootstrap, JS, CSS)
 └── website/                        # Source files for the Quarto site
     ├── _quarto.yml                     # Site configuration
     ├── code.ipynb                      # Full analysis + visualizations
     ├── index.qmd                       # Home page
-    └── story.qmd                       # Narrative and embedded charts
+    ├── story.qmd                       # Narrative and embedded charts
+    ├── sql.qmd                         # SQL queries used in data retrieval
+    └── media/                          # Images used in website
 ```

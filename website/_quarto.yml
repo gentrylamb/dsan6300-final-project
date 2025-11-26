@@ -5,6 +5,7 @@ project:
 
 website:
   title: "Airline Performance Analysis"
+  favicon: media/favicon.png
   navbar:
     left:
       - href: index.qmd
@@ -12,12 +13,13 @@ website:
       - href: story.qmd
         text: The Story
       - href: code.ipynb
-        text: Code
+        text: Python Code
+      - href: sql.qmd
+        text: SQL Queries
 
 format:
   html:
     theme: minty
-    # css: styles.css
     toc: true
 
 

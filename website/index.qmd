@@ -1,4 +1,23 @@
+---
+format:
+  html:
+    embed-resources: true
+---
 
-# Airline On-Time Statistics and Delay Causes
+![Airliners Waiting for Takeoff](media/homepage.png){width=90% fig-align="center"}
 
+## Overview
 
+This project analyzes U.S. airline performance data using SQL generated datasets covering delays, cancellations, airports, airlines, and temporal patterns.
+The goals of the project are to:
+
+- Understand patterns in flight volume and delays across airlines and airports
+- Identify worst-performing airports for each airline
+- Explore temporal trends such as busiest days and moving averages
+- Build clear visual explanations combining multiple datasets
+
+All analysis is performed in Python, documented through a Quarto website, with a narrative story to demonstrate findings and insights.
+
+## Navigation
+
+Navigation of this site can be accomplished by clicking the 
