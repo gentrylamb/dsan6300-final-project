@@ -15,7 +15,7 @@ They are included for transparency, and to provide a complete reference for the 
 -- 1) Find maximal departure delay in minutes for each airline. Sort results from smallest to largest maximum delay. Output airline names and values of the delay.
 select
 	a.Name as Airline,
-    max(p.DepDelay) as Max_Departure_Delay
+    max(p.DepDelayMinutes) as Max_Departure_Delay
 from
 	al_perf p,
     L_AIRLINE_ID a
@@ -32,6 +32,7 @@ order by
 
 ```sql
 -- 2) Find maximal early departures in minutes for each airline. Sort results from largest to smallest. Output airline names.
+-- *Note: Need to use DepDelay so early departures aren't counted as zeros.
 select
 	a.Name as Airline,
     abs(min(p.DepDelay)) as Max_Early_Departure
@@ -71,6 +72,7 @@ order by
 
 ```sql
 -- 4) Find the airport that has the highest average departure delay among all airports. Consider 0 minutes delay for flights that departed early. Output one line of results: the airport name, code, and average delay.
+-- *Note: Need to use DepDelayMinutes so early departures aren counted as zeros.
 select
 	a.Name as Airport_Name,
     a.Code as Airport_Code,
@@ -92,6 +94,7 @@ limit 1;
 
 ```sql
 -- 5) For each airline find an airport where it has the highest average departure delay. Output an airline name, a name of the airport that has the highest average delay, and the value of that average delay.
+-- *Note: Used DepDelayMinutes so early departures are counted as zeros, which properly accounts for the prompt's implied goal of measuring the average positive delay time.
 with avg_delays as (
 	select
 		al.Name as Airline_Name,
@@ -99,7 +102,7 @@ with avg_delays as (
 		avg(p.DepDelayMinutes) as Avg_Delay,
         rank() over (
 			partition by p.DOT_ID_Reporting_Airline
-            order by avg(p.DepDelay) desc
+            order by avg(p.DepDelayMinutes) desc
 		) as delay_rank
 	from
 		al_perf p,
@@ -133,7 +136,7 @@ select
 from
 	al_perf
 where
-Cancelled = 1;
+	Cancelled = 1;
 -- 1 row
 ```
 
@@ -179,6 +182,7 @@ order by
 
 ```sql
 -- 7) Build a report that for each day output average number of flights over the preceding 3 days.
+-- *Note: Prompt asks for 3 previous days, not including current day.
 with daily_counts as (
 	select
 		-- FlightDate,
