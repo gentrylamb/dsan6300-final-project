@@ -39,14 +39,14 @@
     "href": "sql.html#maximum-departure-delay-per-airline",
     "title": "SQL Queries Used in This Project",
     "section": "1. Maximum Departure Delay per Airline",
-    "text": "1. Maximum Departure Delay per Airline\n-- 1) Find maximal departure delay in minutes for each airline. Sort results from smallest to largest maximum delay. Output airline names and values of the delay.\nselect\n    a.Name as Airline,\n    max(p.DepDelay) as Max_Departure_Delay\nfrom\n    al_perf p,\n    L_AIRLINE_ID a\nwhere\n    p.DOT_ID_Reporting_Airline = a.ID\ngroup by\n    a.Name\norder by\n    Max_Departure_Delay asc;\n-- 15 rows"
+    "text": "1. Maximum Departure Delay per Airline\n-- 1) Find maximal departure delay in minutes for each airline. Sort results from smallest to largest maximum delay. Output airline names and values of the delay.\nselect\n    a.Name as Airline,\n    max(p.DepDelayMinutes) as Max_Departure_Delay\nfrom\n    al_perf p,\n    L_AIRLINE_ID a\nwhere\n    p.DOT_ID_Reporting_Airline = a.ID\ngroup by\n    a.Name\norder by\n    Max_Departure_Delay asc;\n-- 15 rows"
   },
   {
     "objectID": "sql.html#maximum-early-departures-per-airline",
     "href": "sql.html#maximum-early-departures-per-airline",
     "title": "SQL Queries Used in This Project",
     "section": "2. Maximum Early Departures per Airline",
-    "text": "2. Maximum Early Departures per Airline\n-- 2) Find maximal early departures in minutes for each airline. Sort results from largest to smallest. Output airline names.\nselect\n    a.Name as Airline,\n    abs(min(p.DepDelay)) as Max_Early_Departure\nfrom\n    al_perf p,\n    L_AIRLINE_ID a\nwhere\n    p.DOT_ID_Reporting_Airline = a.ID\ngroup by\n    a.Name\norder by\n    Max_Early_Departure desc;\n-- 15 rows"
+    "text": "2. Maximum Early Departures per Airline\n-- 2) Find maximal early departures in minutes for each airline. Sort results from largest to smallest. Output airline names.\n-- *Note: Need to use DepDelay so early departures aren't counted as zeros.\nselect\n    a.Name as Airline,\n    abs(min(p.DepDelay)) as Max_Early_Departure\nfrom\n    al_perf p,\n    L_AIRLINE_ID a\nwhere\n    p.DOT_ID_Reporting_Airline = a.ID\ngroup by\n    a.Name\norder by\n    Max_Early_Departure desc;\n-- 15 rows"
   },
   {
     "objectID": "sql.html#rank-days-of-week-by-total-flights",
@@ -60,21 +60,21 @@
     "href": "sql.html#airport-with-the-highest-average-departure-delay",
     "title": "SQL Queries Used in This Project",
     "section": "4. Airport With the Highest Average Departure Delay",
-    "text": "4. Airport With the Highest Average Departure Delay\n-- 4) Find the airport that has the highest average departure delay among all airports. Consider 0 minutes delay for flights that departed early. Output one line of results: the airport name, code, and average delay.\nselect\n    a.Name as Airport_Name,\n    a.Code as Airport_Code,\n    avg(p.DepDelayMinutes) as Avg_Departure_Delay\nfrom\n    al_perf p,\n    L_AIRPORT a\nwhere\n    p.Origin = a.Code\ngroup by\n    p.Origin, a.Name\norder by\n    Avg_Departure_Delay desc\nlimit 1;\n-- 1 row"
+    "text": "4. Airport With the Highest Average Departure Delay\n-- 4) Find the airport that has the highest average departure delay among all airports. Consider 0 minutes delay for flights that departed early. Output one line of results: the airport name, code, and average delay.\n-- *Note: Need to use DepDelayMinutes so early departures aren counted as zeros.\nselect\n    a.Name as Airport_Name,\n    a.Code as Airport_Code,\n    avg(p.DepDelayMinutes) as Avg_Departure_Delay\nfrom\n    al_perf p,\n    L_AIRPORT a\nwhere\n    p.Origin = a.Code\ngroup by\n    p.Origin, a.Name\norder by\n    Avg_Departure_Delay desc\nlimit 1;\n-- 1 row"
   },
   {
     "objectID": "sql.html#worst-airport-per-airline",
     "href": "sql.html#worst-airport-per-airline",
     "title": "SQL Queries Used in This Project",
     "section": "5. Worst Airport per Airline",
-    "text": "5. Worst Airport per Airline\n-- 5) For each airline find an airport where it has the highest average departure delay. Output an airline name, a name of the airport that has the highest average delay, and the value of that average delay.\nwith avg_delays as (\n    select\n        al.Name as Airline_Name,\n        ap.Name as Airport_Name,\n        avg(p.DepDelayMinutes) as Avg_Delay,\n        rank() over (\n            partition by p.DOT_ID_Reporting_Airline\n            order by avg(p.DepDelay) desc\n        ) as delay_rank\n    from\n        al_perf p,\n        L_AIRLINE_ID al,\n        L_AIRPORT ap\n    where\n        p.Origin = ap.Code and\n        p.DOT_ID_Reporting_Airline = al.ID\n    group by\n        al.Name, ap.Name, p.DOT_ID_Reporting_Airline, p.Origin\n)\nselect\n    Airline_Name,\n    Airport_Name,\n    Avg_Delay as Highest_Avg_Delay\nfrom\n    avg_delays\nwhere\n    delay_rank = 1\norder by\n    Airline_Name;\n-- 15 rows"
+    "text": "5. Worst Airport per Airline\n-- 5) For each airline find an airport where it has the highest average departure delay. Output an airline name, a name of the airport that has the highest average delay, and the value of that average delay.\n-- *Note: Used DepDelayMinutes so early departures are counted as zeros, which properly accounts for the prompt's implied goal of measuring the average positive delay time.\nwith avg_delays as (\n    select\n        al.Name as Airline_Name,\n        ap.Name as Airport_Name,\n        avg(p.DepDelayMinutes) as Avg_Delay,\n        rank() over (\n            partition by p.DOT_ID_Reporting_Airline\n            order by avg(p.DepDelayMinutes) desc\n        ) as delay_rank\n    from\n        al_perf p,\n        L_AIRLINE_ID al,\n        L_AIRPORT ap\n    where\n        p.Origin = ap.Code and\n        p.DOT_ID_Reporting_Airline = al.ID\n    group by\n        al.Name, ap.Name, p.DOT_ID_Reporting_Airline, p.Origin\n)\nselect\n    Airline_Name,\n    Airport_Name,\n    Avg_Delay as Highest_Avg_Delay\nfrom\n    avg_delays\nwhere\n    delay_rank = 1\norder by\n    Airline_Name;\n-- 15 rows"
   },
   {
     "objectID": "sql.html#a.-count-of-canceled-flights",
     "href": "sql.html#a.-count-of-canceled-flights",
     "title": "SQL Queries Used in This Project",
     "section": "6a. Count of Canceled Flights",
-    "text": "6a. Count of Canceled Flights\n-- 6a) Check if your dataset has any canceled flights.\nselect\n    count(*) as Num_Cancelled_Flights\nfrom\n    al_perf\nwhere\nCancelled = 1;\n-- 1 row"
+    "text": "6a. Count of Canceled Flights\n-- 6a) Check if your dataset has any canceled flights.\nselect\n    count(*) as Num_Cancelled_Flights\nfrom\n    al_perf\nwhere\n    Cancelled = 1;\n-- 1 row"
   },
   {
     "objectID": "sql.html#b.-most-frequent-cancelation-reason-per-airport",
@@ -88,6 +88,6 @@
     "href": "sql.html#day-moving-average-of-flights",
     "title": "SQL Queries Used in This Project",
     "section": "7. 3-Day Moving Average of Flights",
-    "text": "7. 3-Day Moving Average of Flights\n-- 7) Build a report that for each day output average number of flights over the preceding 3 days.\nwith daily_counts as (\n    select\n        -- FlightDate,\n        cast(FlightDate as date) as FlightDate,\n        count(*) as Flights_Per_Day\n    from\n        al_perf\n    group by\n        FlightDate\n)\nselect\n    FlightDate,\n    Flights_Per_Day,\n    avg(Flights_Per_Day)\n        over (\n            order by FlightDate\n            rows between 3 preceding and 1 preceding\n        ) as Avg_Previous_3_Days\nfrom\n    daily_counts\nwhere\n    FlightDate is not null\norder by\n    FlightDate;\n-- 31 rows"
+    "text": "7. 3-Day Moving Average of Flights\n-- 7) Build a report that for each day output average number of flights over the preceding 3 days.\n-- *Note: Prompt asks for 3 previous days, not including current day.\nwith daily_counts as (\n    select\n        -- FlightDate,\n        cast(FlightDate as date) as FlightDate,\n        count(*) as Flights_Per_Day\n    from\n        al_perf\n    group by\n        FlightDate\n)\nselect\n    FlightDate,\n    Flights_Per_Day,\n    avg(Flights_Per_Day)\n        over (\n            order by FlightDate\n            rows between 3 preceding and 1 preceding\n        ) as Avg_Previous_3_Days\nfrom\n    daily_counts\nwhere\n    FlightDate is not null\norder by\n    FlightDate;\n-- 31 rows"
   }
 ]
