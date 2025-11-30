@@ -8,7 +8,8 @@ format:
 
 ## Overview
 
-This project analyzes U.S. airline performance data using SQL generated datasets covering delays, cancellations, airports, airlines, and temporal patterns.
+This project analyzes U.S. airline performance data using SQL generated datasets covering delays, cancellations, airports, airlines, and temporal patterns. This analysis was conducted by **Gentry Lamb** for the course **DSAN-6300 Database Systems and SQL**.
+
 The goals of the project are to:
 
 - Understand patterns in flight volume and delays across airlines and airports

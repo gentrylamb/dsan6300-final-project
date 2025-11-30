@@ -18,7 +18,7 @@
     "href": "index.html#overview",
     "title": "Airline Performance Analysis",
     "section": "Overview",
-    "text": "Overview\nThis project analyzes U.S. airline performance data using SQL generated datasets covering delays, cancellations, airports, airlines, and temporal patterns. The goals of the project are to:\n\nUnderstand patterns in flight volume and delays across airlines and airports\nIdentify worst-performing airports for each airline\nExplore temporal trends such as busiest days and moving averages\nBuild clear visual explanations combining multiple datasets\n\nAll analysis is performed in Python, documented through a Quarto website, with a narrative story to demonstrate findings and insights."
+    "text": "Overview\nThis project analyzes U.S. airline performance data using SQL generated datasets covering delays, cancellations, airports, airlines, and temporal patterns. This analysis was conducted by Gentry Lamb for the course DSAN-6300 Database Systems and SQL.\nThe goals of the project are to:\n\nUnderstand patterns in flight volume and delays across airlines and airports\nIdentify worst-performing airports for each airline\nExplore temporal trends such as busiest days and moving averages\nBuild clear visual explanations combining multiple datasets\n\nAll analysis is performed in Python, documented through a Quarto website, with a narrative story to demonstrate findings and insights."
   },
   {
     "objectID": "code.html",
